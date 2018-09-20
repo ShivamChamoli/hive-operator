@@ -22,7 +22,7 @@ type Hive struct {
 }
 
 type HiveSpec struct {
-	// Fill me
+	image string `json:"image"`
 }
 type HiveStatus struct {
 	// Fill me
