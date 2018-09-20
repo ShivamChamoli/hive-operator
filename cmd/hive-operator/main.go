@@ -9,6 +9,8 @@ import (
 	k8sutil "github.com/operator-framework/operator-sdk/pkg/util/k8sutil"
 	sdkVersion "github.com/operator-framework/operator-sdk/version"
 
+	"time"
+
 	"github.com/sirupsen/logrus"
 )
 
@@ -27,9 +29,9 @@ func main() {
 	if err != nil {
 		logrus.Fatalf("Failed to get watch namespace: %v", err)
 	}
-	resyncPeriod := 5
+	resyncPeriod := time.ParseDuration("5s")
 	logrus.Infof("Watching %s, %s, %s, %d", resource, kind, namespace, resyncPeriod)
-	sdk.Watch(resource, kind, namespace, resyncPeriod)
+	sdk.Watch(resource, kind, namespace, resyncPeriod.seconds())
 	sdk.Handle(stub.NewHandler())
 	sdk.Run(context.TODO())
 }
