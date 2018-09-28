@@ -22,7 +22,8 @@ type Hive struct {
 }
 
 type HiveSpec struct {
-	image string `json:"image"`
+	Image string `json:"image"`
+	Size  int32  `json:"size"`
 }
 type HiveStatus struct {
 	// Fill me

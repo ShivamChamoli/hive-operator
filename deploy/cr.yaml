@@ -2,3 +2,5 @@ apiVersion: "hive.example.com/v1alpha1"
 kind: "Hive"
 metadata:
   name: "example"
+spec:
+  size: 3

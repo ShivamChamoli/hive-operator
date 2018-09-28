@@ -31,7 +31,7 @@ func main() {
 	}
 	resyncPeriod, _ := time.ParseDuration("5s")
 	logrus.Infof("Watching %s, %s, %s, %d", resource, kind, namespace, resyncPeriod)
-	sdk.Watch(resource, kind, namespace, resyncPeriod)
+	sdk.Watch(resource, kind, namespace, time.Duration(5)*time.Second)
 	sdk.Handle(stub.NewHandler())
 	sdk.Run(context.TODO())
 }
