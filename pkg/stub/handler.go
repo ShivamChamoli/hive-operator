@@ -60,12 +60,12 @@ func (h *Handler) Handle(ctx context.Context, event sdk.Event) error {
 				if err != nil {
 					return fmt.Errorf("failed to update memcached status: %v", err)
 				}
-			}
+			}*/
 			err = sdk.Create(newHiveService(o))
 			if err != nil && !errors.IsAlreadyExists(err) {
 				logrus.Errorf("Failed to create Hive service: %v", err)
 				return err
-			}*/
+			}
 		}
 	}
 	return nil
