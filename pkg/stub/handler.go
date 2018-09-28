@@ -34,7 +34,7 @@ func (h *Handler) Handle(ctx context.Context, event sdk.Event) error {
 			//create a deployment and then create
 			//a service, sanity check!!
 			logrus.Infof("event created/updated")
-			// Create the deployment if it doesn't exist
+			//create the deployment
 			dep := newHiveDeployment(o)
 			err := sdk.Create(dep)
 			if err != nil && !errors.IsAlreadyExists(err) {
@@ -45,6 +45,7 @@ func (h *Handler) Handle(ctx context.Context, event sdk.Event) error {
 			if err != nil {
 				return fmt.Errorf("failed to get deployment: %v", err)
 			}
+			//check if the spec size is the same
 			size := o.Spec.Size
 			if *dep.Spec.Replicas != size {
 				dep.Spec.Replicas = &size
@@ -61,6 +62,7 @@ func (h *Handler) Handle(ctx context.Context, event sdk.Event) error {
 					return fmt.Errorf("failed to update memcached status: %v", err)
 				}
 			}*/
+			//create the service
 			err = sdk.Create(newHiveService(o))
 			if err != nil && !errors.IsAlreadyExists(err) {
 				logrus.Errorf("Failed to create Hive service: %v", err)
@@ -77,6 +79,8 @@ func newHiveDeployment(cr *v1alpha1.Hive) *appsv1.Deployment {
 		"app": "hive-operator",
 	}
 	replicas := cr.Spec.Size
+	//deployment present in apps/v1 not corev1
+	//need metav1 for including the TypeMeta, ObjectMeta
 	return &appsv1.Deployment{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "Deployment",
@@ -107,11 +111,6 @@ func newHiveDeployment(cr *v1alpha1.Hive) *appsv1.Deployment {
 					Containers: []corev1.Container{{
 						Image: "luksa/kubia:v2",
 						Name:  "hive-operator",
-						/*Command: []string{"memcached", "-m=64", "-o", "modern", "-v"},
-						Ports: []v1.ContainerPort{{
-							ContainerPort: 11211,
-							Name:          "",
-						}},*/
 					}},
 				},
 			},
@@ -124,6 +123,7 @@ func newHiveService(cr *v1alpha1.Hive) *corev1.Service {
 	labels := map[string]string{
 		"app": "hive-operator",
 	}
+	//service is present in corev1 just like pod
 	return &corev1.Service{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "Service",
